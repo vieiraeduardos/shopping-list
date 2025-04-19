@@ -9,15 +9,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "./ui/button"
-import { Trash, Edit } from "lucide-react"
-import { EditItemDialog } from "./edit-item";
+import { Trash } from "lucide-react"
+import { EditItemDialog } from "./edit-item"
 
 interface ShoppingItem {
-  id: string;
-  title: string;
-  category: string;
-  amount: number;
-  price: number;
+  id: string
+  title: string
+  category: string
+  amount: number
+  price: number
 }
 
 export function ShoppingList({ list, setList}: any) {  
@@ -50,6 +50,10 @@ export function ShoppingList({ list, setList}: any) {
     setList(updatedShoppingList)
   }
 
+  const total = list.reduce((acc: number, item: ShoppingItem) => {
+    return acc + item.price * item.amount
+  }, 0)
+
   return (
     <Table>
       <TableCaption>Uma lista de compras recente.</TableCaption>
@@ -81,7 +85,7 @@ export function ShoppingList({ list, setList}: any) {
       <TableFooter>
         <TableRow>
           <TableCell colSpan={4}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
+          <TableCell className="text-right">${total}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
