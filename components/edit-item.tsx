@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { Edit } from "lucide-react"
+import { toast } from "sonner"
 
 export function EditItemDialog({setList, list, item}: any) {
     const [title, setTitle] = useState(item.title)
@@ -44,6 +45,8 @@ export function EditItemDialog({setList, list, item}: any) {
 
         setList(updatedList)
         setOpen(false)
+
+        toast("🎉 Item editado com sucesso!")
     }
 
     return (

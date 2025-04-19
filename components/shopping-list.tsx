@@ -72,7 +72,7 @@ export function ShoppingList({ list, setList}: any) {
             <TableCell className="font-medium">{item.title}</TableCell>
             <TableCell>{getCategoryName(item.category)}</TableCell>
             <TableCell>{item.amount}</TableCell>
-            <TableCell>{item.price}</TableCell>
+            <TableCell>R$ {item.price}</TableCell>
             <TableCell className="text-right">
               <EditItemDialog item={item} setList={setList} list={list} />
               <Button variant="destructive" size="icon" onClick={() => deleteItem(item.id)}>
@@ -85,7 +85,7 @@ export function ShoppingList({ list, setList}: any) {
       <TableFooter>
         <TableRow>
           <TableCell colSpan={4}>Total</TableCell>
-          <TableCell className="text-right">${total}</TableCell>
+          <TableCell className="text-right">R${total}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>

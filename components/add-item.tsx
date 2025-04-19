@@ -26,8 +26,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { Plus } from "lucide-react"
+import { toast } from "sonner"
 
-export function DialogDemo({setList, list}: any) {
+export function AddItemDialog({setList, list}: any) {
     const [title, setTitle] = useState("")
     const [category, setCategory] = useState("")
     const [amount, setAmount] = useState("")
@@ -45,12 +46,14 @@ export function DialogDemo({setList, list}: any) {
 
         setList([...list, itemData])
         setOpen(false)
+
+        toast("🎉 Item adicionado com sucesso!")
     }
 
     return (
         <Dialog defaultOpen={open} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>
+                <Button className="mb-10 ml-auto flex">
                     <Plus />
                     Novo Item
                 </Button>
