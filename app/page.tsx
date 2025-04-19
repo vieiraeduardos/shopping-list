@@ -21,7 +21,7 @@ export default function Home() {
     <div>
       <Header></Header>
 
-      <DialogDemo setList={setList} list={list} />
+      <DialogDemo setList={setList} list={list} type="save" />
       <ShoppingList setList={setList} list={list}></ShoppingList>
     </div>
   );

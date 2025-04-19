@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "./ui/button"
 import { Trash, Edit } from "lucide-react"
+import { EditItemDialog } from "./edit-item";
 
 interface ShoppingItem {
   id: string;
@@ -69,10 +70,7 @@ export function ShoppingList({ list, setList}: any) {
             <TableCell>{item.amount}</TableCell>
             <TableCell>{item.price}</TableCell>
             <TableCell className="text-right">
-              <Button variant="secondary" size="icon">
-                <Edit />
-              </Button>
-
+              <EditItemDialog item={item} setList={setList} list={list} />
               <Button variant="destructive" size="icon" onClick={() => deleteItem(item.id)}>
                 <Trash />
               </Button>
