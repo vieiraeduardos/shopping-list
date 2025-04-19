@@ -5,51 +5,24 @@ import { Header } from "@/components/header";
 import { ShoppingList } from "@/components/shopping-list";
 import { useState } from "react";
 
+interface ShoppingItem {
+  id: string;
+  title: string;
+  category: string;
+  amount: number;
+  price: number;
+}
+
 export default function Home() {
-  const [list, setList] = useState([
-    {
-      id: "1",
-      title: "Arroz",
-      category: "Caboidratos",
-      amount: 2,
-      price: "R$ 9.99",
-    },
-    {
-      id: "2",
-      title: "Arroz",
-      category: "Caboidratos",
-      amount: "2",
-      price: "R$ 9.99",
-    },
-    {
-      id: "3",
-      title: "Arroz",
-      category: "Caboidratos",
-      amount: "2",
-      price: "R$ 9.99",
-    },
-    {
-      id: "4",
-      title: "Arroz",
-      category: "Caboidratos",
-      amount: "2",
-      price: "R$ 9.99",
-    },
-    {
-      id: "5",
-      title: "Arroz",
-      category: "Caboidratos",
-      amount: "2",
-      price: "R$ 9.99",
-    }
-  ]);
+  
+  const [list, setList] = useState([] as ShoppingItem[]);
 
   return (
     <div>
       <Header></Header>
 
       <DialogDemo setList={setList} list={list} />
-      <ShoppingList shoppingList={list}></ShoppingList>
+      <ShoppingList setList={setList} list={list}></ShoppingList>
     </div>
   );
 }

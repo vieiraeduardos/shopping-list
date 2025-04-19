@@ -25,6 +25,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+import { Plus } from "lucide-react"
+
 export function DialogDemo({setList, list}: any) {
     const [title, setTitle] = useState("")
     const [category, setCategory] = useState("")
@@ -48,7 +50,10 @@ export function DialogDemo({setList, list}: any) {
     return (
         <Dialog defaultOpen={open} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Adicionar Item</Button>
+                <Button>
+                    <Plus />
+                    Novo Item
+                </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

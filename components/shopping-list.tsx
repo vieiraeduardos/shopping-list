@@ -19,11 +19,7 @@ interface ShoppingItem {
   price: number;
 }
 
-interface ShoppingListProps {
-  shoppingList: ShoppingItem[];
-}
-
-export function ShoppingList({ shoppingList }: any) {
+export function ShoppingList({ list, setList}: any) {  
   function getCategoryName(category: string): string {
     switch (category) {
       case "caboidrate":
@@ -44,11 +40,17 @@ export function ShoppingList({ shoppingList }: any) {
         return "Cuidados Pessoais"
       default:
         return "Outros"
-    } 
+    }
+  }
+
+  const deleteItem = (key: string) => {
+    const updatedShoppingList = list.filter((item: ShoppingItem) => item.id !== key)
+
+    setList(updatedShoppingList)
   }
 
   return (
-      <Table>
+    <Table>
       <TableCaption>Uma lista de compras recente.</TableCaption>
       <TableHeader>
         <TableRow>
@@ -60,7 +62,7 @@ export function ShoppingList({ shoppingList }: any) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {shoppingList.map((item: any) => (
+        {list.map((item: any) => (
           <TableRow key={item.id}>
             <TableCell className="font-medium">{item.title}</TableCell>
             <TableCell>{getCategoryName(item.category)}</TableCell>
@@ -71,7 +73,7 @@ export function ShoppingList({ shoppingList }: any) {
                 <Edit />
               </Button>
 
-              <Button variant="destructive" size="icon">
+              <Button variant="destructive" size="icon" onClick={() => deleteItem(item.id)}>
                 <Trash />
               </Button>
             </TableCell>
