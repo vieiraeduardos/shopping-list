@@ -85,7 +85,7 @@ export function ShoppingList({ list, setList}: any) {
       <TableFooter>
         <TableRow>
           <TableCell colSpan={4}>Total</TableCell>
-          <TableCell className="text-right">R${total}</TableCell>
+          <TableCell className="text-right">R$ {total}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>

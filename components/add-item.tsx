@@ -28,21 +28,33 @@ import { Label } from "@/components/ui/label"
 import { Plus } from "lucide-react"
 import { toast } from "sonner"
 
-export function AddItemDialog({setList, list}: any) {
+export function AddItemDialog({ setList, list }: any) {
     const [title, setTitle] = useState("")
     const [category, setCategory] = useState("")
     const [amount, setAmount] = useState("")
     const [price, setPrice] = useState("")
     const [open, setOpen] = React.useState(false)
 
-    const handleSave = () => {
+    const addItem = async (newItem: any) => {
+        const response = await fetch("/api/items", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newItem),
+        });
+    }
+
+    const handleSave = async () => {
         const itemData = {
-            id: Math.random().toString(36).substr(2, 9), 
-            title,
-            category,
-            amount,
-            price,
+            "title": title,
+            "category": category,
+            "amount": parseInt(amount),
+            "price": parseFloat(price),
+            "created_at": new Date().toISOString()
         }
+
+        await addItem(itemData);
 
         setList([...list, itemData])
         setOpen(false)

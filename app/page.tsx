@@ -3,7 +3,7 @@
 import { AddItemDialog } from "@/components/add-item";
 import { Header } from "@/components/header";
 import { ShoppingList } from "@/components/shopping-list";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ShoppingItem {
   id: string;
@@ -14,8 +14,17 @@ interface ShoppingItem {
 }
 
 export default function Home() {
-
   const [list, setList] = useState([] as ShoppingItem[]);
+
+  useEffect(() => {
+    async function fetchItems() {
+        const response = await fetch("/api/items");
+        const data = await response.json();
+        setList(data);
+    }
+
+    fetchItems();
+}, []);
 
   return (
     <div>
