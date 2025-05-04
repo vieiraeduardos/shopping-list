@@ -28,6 +28,17 @@ export default class SQLiteClient {
                     created_at TEXT NOT NULL
                 )
             `);
+
+            await this.run(`
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    phone TEXT NOT NULL,
+                    password TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                )
+            `);
         }
         return this.db;
     }
@@ -76,6 +87,45 @@ export default class SQLiteClient {
                     reject(err);
                 } else {
                     resolve(rows);
+                }
+            });
+        });
+    }
+
+    async insert_user(item: { name: string; email: string; phone: string; password: string;created_at: string }): Promise<void> {
+        await this.open_db();
+        const sql = `INSERT INTO users (name, email, phone, password, created_at) VALUES (?, ?, ?, ?, ?)`;
+        await this.run(sql, [item.name, item.email, item.phone, item.password, item.created_at]);
+        this.close_db();
+    }
+
+    async get_users(): Promise<any[]> {
+        await this.open_db();
+        return new Promise((resolve, reject) => {
+            if (!this.db) {
+                return reject(new Error("Database is not open"));
+            }
+            this.db.all("SELECT * FROM users", [], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
+    async login_user(item: { email: string, password: string }): Promise<any> {
+        await this.open_db();
+        return new Promise((resolve, reject) => {
+            if (!this.db) {
+                return reject(new Error("Database is not open"));
+            }
+            this.db.get("SELECT * FROM users WHERE email = ? AND password = ?", [item.email, item.password], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row);
                 }
             });
         });
