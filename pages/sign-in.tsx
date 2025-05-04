@@ -1,63 +1,61 @@
-import "../app/globals.css";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { FormEvent, useState } from "react";
-import { toast } from "sonner";
-
+import "../app/globals.css"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { toast } from "sonner"
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ShoppingBasketIcon } from 'lucide-react';
-import { useRouter } from "next/navigation";
+import { ShoppingBasketIcon } from 'lucide-react'
 
 const navigation: any[] = []
 
 export default function Login() {
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [phone, setPhone] = useState("")
-    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-    const router = useRouter()
-
-    const addUser = async (payload: any) => {
-        const response = await fetch("/api/users", {
+    const login = async (payload: any) => {
+        const response = await fetch("/api/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
         });
-    }
 
-    const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
+        return response;
+    };
+
+    const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!name || !email || !phone || !password) {
-            toast.error("⚠️ Todos os campos são obrigatórios.")
+        if (!email || !password) {
+            toast("⚠️ Todos os campos são obrigatórios.");
             return;
         }
 
         const user = {
-            "name": name,
-            "email": email,
-            "phone": phone,
-            "password": password,
+            email: email,
+            password: password,
+        };
+
+        const response = await login(user);
+
+        if (response.status !== 200) {
+            toast("⚠️ Email ou senha inválidos.");
+            return;
         }
 
-        await addUser(user);
-
-        setName("");
         setEmail("");
-        setPhone("");
         setPassword("");
 
-        toast("🎉 Usuário cadastrado com sucesso!")
+        toast("🎉 Usuário logado com sucesso!");
 
-        router.push("/sign-in")
-
-    }
+        router.push("/app");
+    };
 
     return (
         <div className="bg-white">
@@ -87,8 +85,8 @@ export default function Login() {
                         ))}
                     </div>
                     <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                        <a href="/sign-in" className="text-sm/6 font-semibold text-gray-900">
-                            Entrar <span aria-hidden="true">&rarr;</span>
+                        <a href="/sign-up" className="text-sm/6 font-semibold text-gray-900">
+                            Criar conta <span aria-hidden="true">&rarr;</span>
                         </a>
                     </div>
                 </nav>
@@ -124,10 +122,10 @@ export default function Login() {
                                 </div>
                                 <div className="py-6">
                                     <a
-                                        href="/sign-in"
+                                        href="/sign-up"
                                         className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                                     >
-                                        Entrar
+                                        Criar conta
                                     </a>
                                 </div>
                             </div>
@@ -152,36 +150,22 @@ export default function Login() {
                 <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-10"> {/* lg:py-56 */}
                     <div className="hidden sm:mb-8 sm:flex sm:justify-center">
                         <div className="relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-                            Já tem uma conta? {' '}
+                            Ainda não tem uma conta? {' '}
                             <a href="/sign-in" className="font-semibold text-indigo-600">
                                 <span aria-hidden="true" className="absolute inset-0" />
-                                Entre agora <span aria-hidden="true">&rarr;</span>
+                                Crie uma agora <span aria-hidden="true">&rarr;</span>
                             </a>
                         </div>
                     </div>
                     <div className="text-center">
                         <h1 className="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">
-                            Criar conta grátis
+                            Entre na sua conta
                         </h1>
                         <p className="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
-                            Crie uma conta para começar a usar nosso aplicativo de lista de compras. É rápido e fácil!
+                            Acesse sua conta para gerenciar suas listas de compras e muito mais.
                         </p>
 
-                        <form onSubmit={(e) => { handleSignUp(e) }}>
-                            <div className="mt-10 flex items-left justify-left gap-x-6">
-                                <Label htmlFor="name">Seu nome</Label>
-
-                            </div>
-                            <div className="mt-10 flex items-center justify-center gap-x-6">
-                                <Input
-                                    id="name"
-                                    type="text"
-                                    autoCorrect="off"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                            </div>
-
+                        <form onSubmit={(e) => { handleSignIn(e) }}>
                             <div className="mt-10 flex items-left justify-left gap-x-6">
                                 <Label htmlFor="email">Seu e-mail</Label>
 
@@ -199,20 +183,6 @@ export default function Login() {
                             </div>
 
                             <div className="mt-10 flex items-left justify-left gap-x-6">
-                                <Label htmlFor="phone">Celular</Label>
-
-                            </div>
-                            <div className="mt-10 flex items-center justify-center gap-x-6">
-                                <Input
-                                    id="phone"
-                                    placeholder="(99) 99999-9999"
-                                    type="tel"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                />
-                            </div>
-
-                            <div className="mt-10 flex items-left justify-left gap-x-6">
                                 <Label htmlFor="email">Senha</Label>
 
                             </div>
@@ -220,6 +190,9 @@ export default function Login() {
                                 <Input
                                     id="password"
                                     type="password"
+                                    autoCapitalize="none"
+                                    autoComplete="current-password"
+                                    autoCorrect="off"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
@@ -230,17 +203,12 @@ export default function Login() {
                                     type="submit"
                                     className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
-                                    Criar conta
+                                    Entrar
                                 </Button>
-                            </div>
 
-                            <div className="mt-10 flex items-center justify-center gap-x-6">
-                                <p className="text-sm text-gray-500">
-                                    Ao criar uma conta, você concorda com nossos{' '}
-                                    <a href="#" className="font-semibold leading-6 text-indigo-600">
-                                        Termos de uso e Política de privacidade <span aria-hidden="true">&rarr;</span>
-                                    </a>
-                                </p>
+                                <a href="#" className="text-sm/6 font-semibold text-gray-900">
+                                    Esqueci minha senha <span aria-hidden="true">→</span>
+                                </a>
                             </div>
                         </form>
                     </div>
