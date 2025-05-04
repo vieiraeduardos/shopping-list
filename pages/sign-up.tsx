@@ -2,7 +2,7 @@ import "../app/globals.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Dialog, DialogPanel } from '@headlessui/react'
@@ -18,8 +18,36 @@ export default function Login() {
     const [phone, setPhone] = useState("")
     const [password, setPassword] = useState("")
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const router = useRouter()
+
+    useEffect(() => {
+            const token = localStorage.getItem("authToken")
+        
+            async function validateToken() {
+              try {
+                const response = await fetch("/api/validate-token", {
+                  method: "GET",
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  },
+                })
+        
+                if (response.status == 200) {
+                  router.push("/app")
+                  return
+                }
+              } catch (error) {
+                console.error("Erro ao validar o token:", error)
+                localStorage.removeItem("authToken")
+              } finally {
+                setLoading(true)
+              }
+            }
+        
+            validateToken()
+          }, [router])
 
     const addUser = async (payload: any) => {
         const response = await fetch("/api/users", {
@@ -57,6 +85,14 @@ export default function Login() {
 
         router.push("/sign-in")
 
+    }
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <p>Carregando...</p>
+            </div>
+        );
     }
 
     return (

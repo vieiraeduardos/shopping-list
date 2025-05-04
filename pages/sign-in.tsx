@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -16,6 +16,34 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const token = localStorage.getItem("authToken")
+    
+        async function validateToken() {
+          try {
+            const response = await fetch("/api/validate-token", {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`
+              },
+            })
+    
+            if (response.status == 200) {
+              router.push("/app")
+              return
+            }
+          } catch (error) {
+            console.error("Erro ao validar o token:", error)
+            localStorage.removeItem("authToken")
+          } finally {
+            setLoading(true)
+          }
+        }
+    
+        validateToken()
+      }, [router])
 
     const login = async (payload: any) => {
         const response = await fetch("/api/login", {
@@ -49,13 +77,24 @@ export default function Login() {
             return;
         }
 
+        const data = await response.json(); // Supondo que o token seja retornado no corpo da resposta
+        localStorage.setItem("authToken", data.token); // Armazena o token no localStorage
+
         setEmail("");
         setPassword("");
 
         toast("🎉 Usuário logado com sucesso!");
 
-        router.push("/app");
+        router.push("/app"); // Redireciona para a página /app
     };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <p>Carregando...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-white">
